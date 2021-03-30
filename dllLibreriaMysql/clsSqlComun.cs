@@ -141,6 +141,7 @@ namespace dllLibreriaMysql
 			string strtipo;
 			string strrequerido;
 			Control control;
+			Label controllabel;
 			string strvalor;
 			string strinsert;
 			string strvalues;
@@ -158,12 +159,6 @@ namespace dllLibreriaMysql
 			//auto_increment										
 			for (intfila = 0; intfila <= ds.Tables[0].Rows.Count - 1; intfila++)
 			{
-				//strnombre_control = ds.Tables[0].Rows[intfila]["column_name"].ToString();
-				//strtipo = ds.Tables[0].Rows[intfila]["column_comment"].ToString();
-				//strrequerido = ds.Tables[0].Rows[intfila]["is_nullable"].ToString();
-				//strcontrol_key = ds.Tables[0].Rows[intfila]["column_key"].ToString();
-				//strcontrol_extra = ds.Tables[0].Rows[intfila]["extra"].ToString();
-
 				strnombre_control = ds.Tables[0].Rows[intfila]["COLUMNA"].ToString();
 				strtipo = ds.Tables[0].Rows[intfila]["value"].ToString();
 				strrequerido = ds.Tables[0].Rows[intfila]["is_nullable"].ToString();
@@ -182,6 +177,14 @@ namespace dllLibreriaMysql
 					{
 						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as TextBox;
 						strvalor = control.Text.ToString();
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						if (controllabel.Font.Underline == true)
+						{
+							if (String.IsNullOrEmpty(strvalor) )
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 					if (strtipo == "rtb")
 					{
@@ -191,14 +194,28 @@ namespace dllLibreriaMysql
 					if (strtipo == "dtp")
 					{
 						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as DateTimePicker;
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
 						strvalor = control.Text.ToString();
+
+						if (controllabel.Font.Underline == true)
+						{
+							if (strvalor=="01-01-1900")
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 					if (strtipo == "cbx")
 					{
-						//control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as ComboBox;
-						//strvalor = control.Text.ToString();
-
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
 						strvalor = (tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as ComboBox).SelectedValue.ToString();
+						if (controllabel.Font.Underline == true)
+						{
+							if(String.IsNullOrEmpty(strvalor) && strvalor=="0")
+							{
+								strMensaje = strMensaje + "-"  + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 					if (strrequerido == "False")
 					{
@@ -277,6 +294,7 @@ namespace dllLibreriaMysql
 			string strcontrol_key;
 			string strtipo;
 			Control control;
+			Label controllabel;
 			string strvalor;
 			string strinsert;
 			string strvalues;
@@ -310,6 +328,14 @@ namespace dllLibreriaMysql
 					{
 						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as TextBox;
 						strvalor = control.Text.ToString();
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						if (controllabel.Font.Underline == true)
+						{
+							if (String.IsNullOrEmpty(strvalor))
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 					if (strtipo == "rtb")
 					{
@@ -320,12 +346,28 @@ namespace dllLibreriaMysql
 					{
 						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as DateTimePicker;
 						strvalor = control.Text.ToString();
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						if (controllabel.Font.Underline == true)
+						{
+							if (strvalor == "01-01-1900")
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 					if (strtipo == "cbx")
 					{
 						//control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as ComboBox;
 						//strvalor = control.Text.ToString();
 						strvalor = (tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as ComboBox).SelectedValue.ToString();
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						if (controllabel.Font.Underline == true)
+						{
+							if (String.IsNullOrEmpty(strvalor) && strvalor == "0")
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
 					}
 
 					if (strrequerido == "0")
