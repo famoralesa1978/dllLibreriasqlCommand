@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Data.Sql;
+
 namespace dllLibreriaMysql
 
 {
@@ -562,6 +563,128 @@ namespace dllLibreriaMysql
 				bolResult = false;
 				MessageBox.Show(strMensaje);
 			}
+
+		}
+
+		public bool ValidarFormulario(string strPublicacion, GroupBox tabla, ref Boolean bolResult, ref string strMensaje)
+		{
+			bool bolValidar = false;
+			DataSet ds = new DataSet();
+			SqlCommand cmd = new SqlCommand();
+			// SqlCommand cmd = new SqlCommand();
+
+			cmd.CommandText = " SELECT is_identity,VALUE,is_nullable,columns.NAME AS COLUMNA,columns.NAME AS COLUMNA,CASE WHEN pk.COLUMN_NAME IS NOT NULL THEN 'PRI' ELSE '' END AS KeyType " +
+			 "FROM sys.schemas INNER JOIN sys.tables ON schemas.schema_id = tables.schema_id " +
+		 "INNER JOIN sys.columns  " +
+			"ON tables.object_id = columns.object_id " +
+		 "LEFT JOIN (SELECT ku.TABLE_CATALOG,ku.TABLE_SCHEMA,ku.TABLE_NAME,ku.COLUMN_NAME   " +
+		 "FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS AS tc INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS ku  ON  tc.CONSTRAINT_TYPE = 'PRIMARY KEY' AND " +
+			"tc.CONSTRAINT_NAME = ku.CONSTRAINT_NAME) " +
+		 "pk ON  pk.COLUMN_NAME=columns.NAME AND tables.NAME = pk.TABLE_NAME  " +
+			"left JOIN  sys.extended_properties  ON tables.object_id = extended_properties.major_id   AND columns.column_id = extended_properties.minor_id " +
+			" where tables.NAME= '" + tabla.Name.ToString() + "';";
+
+			//"SELECT * FROM " +tabla.Name.ToString();// WHERE TABLE_SCHEMA = 'bd_sistema' AND "// +
+			// "TABLE_NAME = '" + tabla.Name.ToString()    + "'";
+			cmd.CommandType = CommandType.Text;
+
+			ds = Conectar.Listar(strPublicacion, cmd);
+			strMensaje = "";
+			int intfila;
+			string strnombre_control;
+			string strtipo;
+			string strrequerido;
+			Control control;
+			Label controllabel;
+			string strvalor;
+			string strinsert;
+			string strvalues;
+			string strcontrol_key;
+			string strcontrol_extra;
+			string strpaso;
+			strvalues = "";
+			strpaso = "";
+			strrequerido = "";
+			strcontrol_key = "";
+			strcontrol_extra = "";
+			strinsert = "insert into " + tabla.Name.ToString() + "(";
+			//auto_increment										
+			for (intfila = 0; intfila <= ds.Tables[0].Rows.Count - 1; intfila++)
+			{
+				strnombre_control = ds.Tables[0].Rows[intfila]["COLUMNA"].ToString();
+				strtipo = ds.Tables[0].Rows[intfila]["value"].ToString();
+				strrequerido = ds.Tables[0].Rows[intfila]["is_nullable"].ToString();
+				strcontrol_key = ds.Tables[0].Rows[intfila]["KeyType"].ToString();
+				strcontrol_extra = ds.Tables[0].Rows[intfila]["is_identity"].ToString();
+				strvalor = "";
+
+				if ((strtipo != "") && (strcontrol_extra != "True"))
+				{
+					if (strtipo == "lbl")
+					{
+						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as Label;
+						strvalor = control.Text.ToString();
+					}
+					if (strtipo == "txt")
+					{
+						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as TextBox;
+						strvalor = control.Text.ToString();
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						if (controllabel.Font.Underline == true)
+						{
+							if (String.IsNullOrEmpty(strvalor))
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
+					}
+					if (strtipo == "rtb")
+					{
+						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as RichTextBox;
+						strvalor = control.Text.ToString();
+					}
+					if (strtipo == "dtp")
+					{
+						control = tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as DateTimePicker;
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						strvalor = control.Text.ToString();
+
+						if (controllabel.Font.Underline == true)
+						{
+							if (strvalor == "01-01-1900")
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
+					}
+					if (strtipo == "cbx")
+					{
+						controllabel = tabla.Controls.Find("lbl_" + strnombre_control, true).FirstOrDefault() as Label;
+						strvalor = (tabla.Controls.Find(strtipo + "_" + strnombre_control, true).FirstOrDefault() as ComboBox).SelectedValue.ToString();
+						if (controllabel.Font.Underline == true)
+						{
+							if (String.IsNullOrEmpty(strvalor) && strvalor == "0")
+							{
+								strMensaje = strMensaje + "-" + controllabel.Text + System.Environment.NewLine;
+							}
+						}
+					}
+
+				}
+			}//for
+
+			if (strMensaje == "")
+			{
+				bolValidar = false;
+			}
+			else
+			{
+
+				strMensaje = "Faltan campos por ingresar:" + "\n" + strMensaje;
+				bolValidar = false;
+			}
+
+			return bolValidar;
 
 		}
 
