@@ -675,7 +675,7 @@ namespace dllLibreriaMysql
 
 			if (strMensaje == "")
 			{
-				bolValidar = false;
+				bolValidar = true;
 			}
 			else
 			{
