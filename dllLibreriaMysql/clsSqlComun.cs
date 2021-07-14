@@ -26,6 +26,19 @@ namespace dllLibreriaMysql
 			cbxEstadodescrion.DataSource = ds.Tables[0];
 		}
 
+		public void Listar_EstadoBusqueda(string strPublicacion, ref ComboBox cbxEstadodescrion, ref ComboBox cbxEstadoId)
+		{
+			DataSet ds = new DataSet();
+			SqlCommand cmd = new SqlCommand();
+			cmd.CommandText = "select 'Todos'as Descripcion, -1 as Id_Estado union  SELECT Descripcion,Id_Estado from glo_estado ORDER BY orden";
+			cmd.CommandType = CommandType.Text;
+
+			ds = Conectar.Listar(strPublicacion, cmd);
+			cbxEstadodescrion.DisplayMember = ds.Tables[0].Columns[0].Caption.ToString();
+			cbxEstadodescrion.ValueMember = ds.Tables[0].Columns[1].Caption.ToString();
+			cbxEstadodescrion.DataSource = ds.Tables[0];
+		}
+
 		public void Listar_Region(string strPublicacion, ref ComboBox cbxGlosa, ref ComboBox cbxId)
 		{
 			DataSet ds = new DataSet();
