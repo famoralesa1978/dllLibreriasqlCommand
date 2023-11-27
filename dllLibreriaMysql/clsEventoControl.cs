@@ -68,10 +68,10 @@ namespace dllLibreriaEvento
 			nonRutEntered = false;
 
 			// Determine whether the keystroke is a number from the top of the keyboard.
-			if ((e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9) && (e.KeyCode != Keys.K && e.KeyValue != 75) && (e.KeyValue != 109))
+			if ((e.KeyCode < Keys.D0 || e.KeyCode > Keys.D9) && (e.KeyCode != Keys.K && e.KeyValue != 75) && (e.KeyValue != 109) && (e.KeyValue != 189))
 			{
 				// Determine whether the keystroke is a number from the keypad.
-				if ((e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9) && (e.KeyCode != Keys.K) && (e.KeyValue != 109))
+				if ((e.KeyCode < Keys.NumPad0 || e.KeyCode > Keys.NumPad9) && (e.KeyCode != Keys.K) && (e.KeyValue != 109) && (e.KeyValue != 189))
 				{
 					// Determine whether the keystroke is a backspace.
 					if ((e.KeyCode != Keys.Back) && (e.KeyCode != Keys.Enter))
